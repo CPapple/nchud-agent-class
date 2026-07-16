@@ -46,17 +46,24 @@
             font-size: 16px;
             margin-bottom: 32px;
         }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
         .link-btn {
             display: inline-block;
             background: #C86B4E;
             color: white;
             text-decoration: none;
-            padding: 16px 40px;
+            padding: 14px 36px;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(200,107,78,0.4);
+            min-width: 260px;
         }
         .link-btn:hover {
             background: #A85A3F;
@@ -65,6 +72,19 @@
         }
         .link-btn:active {
             transform: translateY(0);
+        }
+        .link-btn.secondary {
+            background: #4A7C6F;
+            box-shadow: 0 4px 15px rgba(74,124,111,0.4);
+        }
+        .link-btn.secondary:hover {
+            background: #3B6659;
+            box-shadow: 0 8px 25px rgba(74,124,111,0.5);
+        }
+        .link-label {
+            font-size: 13px;
+            color: rgba(26,26,46,0.5);
+            margin-bottom: 4px;
         }
         .arrow { margin-left: 8px; }
         .footer {
@@ -79,10 +99,21 @@
         <div class="badge">HERMES AGENT</div>
         <h1>中興大學 Agent 實作課程</h1>
         <p class="subtitle">2026/07/16（四）13:30 – 16:30</p>
-        <a class="link-btn" href="https://docs.google.com/presentation/d/1ONUleUZYxS0dLfu4EwN4l0guVPUpYMmgfRcRjkIy9vE/edit?usp=sharing" target="_blank">
-            開啟課程簡報 <span class="arrow">&rarr;</span>
-        </a>
-        <p class="footer">點擊上方按鈕即可開啟 Google 簡報</p>
+        <div class="links">
+            <div>
+                <p class="link-label">下午場</p>
+                <a class="link-btn" href="https://docs.google.com/presentation/d/1ONUleUZYxS0dLfu4EwN4l0guVPUpYMmgfRcRjkIy9vE/edit?usp=sharing" target="_blank">
+                    下午簡報 PPT <span class="arrow">&rarr;</span>
+                </a>
+            </div>
+            <div>
+                <p class="link-label">上午場</p>
+                <a class="link-btn secondary" href="https://drive.google.com/file/d/1JlwMf4fthWj_GzrEwCSp8gf7Gg9APQFe/view?usp=sharing" target="_blank">
+                    上午簡報 PPT <span class="arrow">&rarr;</span>
+                </a>
+            </div>
+        </div>
+        <p class="footer">點擊按鈕即可開啟對應簡報</p>
     </div>
 </body>
 </html>
