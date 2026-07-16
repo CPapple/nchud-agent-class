@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="description" content="Hermes One 下午場延伸教材：Skill、Context、Cron、Agent Profiles、SOUL.md 與看板派工。">
+ <title>Hermes One｜從會用，到會設計工作流</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+ <style>
+ :root{
+ --navy:#132642;
+ --navy-2:#203a5f;
+ --blue:#3f6f9d;
+ --sky:#eaf2f8;
+ --paper:#f7f5f0;
+ --white:#fff;
+ --ink:#202a36;
+ --muted:#687586;
+ --line:#d8dfe6;
+ --coral:#c75d42;
+ --coral-soft:#faebe6;
+ --green:#3f7968;
+ --green-soft:#e8f2ee;
+ --gold:#ae7b2e;
+ --sidebar:252px;
+ }
+ *{box-sizing:border-box}
+ html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+ body{
+ margin:0;
+ color:var(--ink);
+ background:var(--paper);
+ font-family:"Noto Sans TC",-apple-system,BlinkMacSystemFont,"PingFang TC","Microsoft JhengHei",sans-serif;
+ line-height:1.65;
+ -webkit-font-smoothing:antialiased;
+ }
+ a{color:inherit}
+ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#edf1f4;border-radius:5px;padding:.08em .34em;font-size:.92em}
+
+ /* Sidebar */
+ .sidebar{
+ position:fixed;inset:0 auto 0 0;width:var(--sidebar);z-index:20;
+ display:flex;flex-direction:column;
+ color:#eaf0f6;background:var(--navy);
+ border-right:1px solid rgba(255,255,255,.09);
+ }
+ .brand{padding:28px 24px 19px;border-bottom:1px solid rgba(255,255,255,.12)}
+ .brand-kicker{font-size:10px;letter-spacing:.2em;color:#94aec8;font-weight:700;text-transform:uppercase}
+ .brand-title{font-family:"Noto Serif TC",serif;font-weight:900;font-size:18px;line-height:1.45;margin-top:7px}
+ .brand-sub{font-size:11.5px;color:#9fb1c5;margin-top:5px}
+ .nav{padding:12px 10px;overflow:auto;flex:1;scrollbar-width:thin}
+ .nav a{
+ display:grid;grid-template-columns:24px 1fr;gap:7px;align-items:center;
+ min-height:36px;padding:6px 10px;margin:2px 0;border-radius:7px;
+ text-decoration:none;color:#aebdcd;font-size:12.5px;transition:.18s ease;
+ }
+ .nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+ .nav a.active{background:#fff;color:var(--navy);font-weight:700;box-shadow:0 5px 18px rgba(0,0,0,.18)}
+ .nav-num{font-size:10px;letter-spacing:.08em;color:#7f9ab5;font-weight:700}
+ .nav a.active .nav-num{color:var(--coral)}
+ .sidebar-foot{padding:14px 20px 18px;border-top:1px solid rgba(255,255,255,.12);font-size:10.5px;color:#8298ad}
+ .progress{height:3px;background:rgba(255,255,255,.12);margin-bottom:12px;border-radius:9px;overflow:hidden}
+ .progress span{display:block;width:0;height:100%;background:var(--coral);transition:width .2s ease}
+
+ /* Slides */
+ main{margin-left:var(--sidebar)}
+ .slide{
+ min-height:100svh;padding:56px clamp(42px,6vw,92px);
+ display:flex;align-items:center;position:relative;scroll-snap-align:start;
+ border-bottom:1px solid var(--line);overflow:hidden;
+ }
+ .slide:nth-child(even){background:var(--white)}
+ .slide::after{
+ content:attr(data-page);position:absolute;right:28px;bottom:20px;
+ font-family:"Noto Serif TC",serif;font-weight:900;font-size:12px;color:#9ca7b2;letter-spacing:.1em;
+ }
+ .slide-inner{width:min(1120px,100%);margin:0 auto;position:relative;z-index:1}
+ .eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.18em;color:var(--blue);font-weight:900;text-transform:uppercase;margin-bottom:14px}
+ .eyebrow::before{content:"";width:28px;height:2px;background:var(--coral)}
+ h1,h2,h3,p{margin-top:0}
+ h1,h2{font-family:"Noto Serif TC",serif;color:var(--navy);letter-spacing:.01em}
+ h1{font-size:clamp(38px,5vw,70px);line-height:1.18;margin-bottom:20px;font-weight:900}
+ h2{font-size:clamp(29px,3.2vw,46px);line-height:1.25;margin-bottom:14px;font-weight:900}
+ h3{font-size:18px;color:var(--navy);line-height:1.45;margin-bottom:8px}
+ .lead{font-size:clamp(16px,1.7vw,21px);color:var(--muted);max-width:880px;margin-bottom:28px}
+ .big-line{font-family:"Noto Serif TC",serif;font-size:clamp(28px,3.7vw,54px);line-height:1.3;font-weight:900;color:var(--navy)}
+ .accent{color:var(--coral)}
+ .muted{color:var(--muted)}
+ .small{font-size:12.5px;color:var(--muted)}
+ .tag-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+ .tag{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:7px 13px;background:rgba(255,255,255,.65);font-size:12px;color:var(--navy);font-weight:700}
+ .tag.hot{background:var(--coral);border-color:var(--coral);color:#fff}
+ .tag.time::before{content:"◷";margin-right:6px;color:var(--coral)}
+ .grid2,.grid3,.grid4{display:grid;gap:16px}
+ .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .card{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.82);padding:20px 21px;box-shadow:0 8px 22px rgba(19,38,66,.045)}
+ .card p:last-child{margin-bottom:0}
+ .card-num{font-family:"Noto Serif TC",serif;font-size:13px;color:var(--coral);font-weight:900;margin-bottom:6px}
+ .card.good{border-top:4px solid var(--green);background:var(--green-soft)}
+ .card.warn{border-top:4px solid var(--coral);background:var(--coral-soft)}
+ .card.blue{border-top:4px solid var(--blue);background:var(--sky)}
+ .card.gold{border-top:4px solid var(--gold)}
+ .quote{border-left:4px solid var(--coral);padding:14px 18px;background:var(--coral-soft);border-radius:0 10px 10px 0;color:var(--navy);font-weight:700;font-size:16px}
+ .source{font-size:11px;color:var(--muted);margin-top:13px}
+ .source a{text-decoration-color:#a9b5c0;text-underline-offset:3px}
+ .source a:hover{color:var(--blue)}
+
+ /* Cover */
+ .cover{background:var(--navy)!important;color:#fff}
+ .cover::before{content:"";position:absolute;width:540px;height:540px;border:1px solid rgba(255,255,255,.1);border-radius:50%;right:-160px;top:-170px;box-shadow:0 0 0 80px rgba(255,255,255,.025),0 0 0 160px rgba(255,255,255,.018)}
+ .cover h1{color:#fff;max-width:900px}
+ .cover .lead{color:#b7c5d4;max-width:760px}
+ .cover .eyebrow{color:#8eabc5}.cover .tag{border-color:rgba(255,255,255,.2);color:#dfe8f0;background:rgba(255,255,255,.05)}
+ .cover::after{color:#6f89a1}
+ .cover-note{margin-top:44px;font-size:13px;color:#90a6bb;letter-spacing:.04em}
+
+ /* Diagrams */
+ .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:end;margin-top:28px}
+ .step{border-radius:10px 10px 4px 4px;padding:17px 16px;background:var(--sky);border:1px solid #ccdbe7;min-height:116px}
+ .step:nth-child(2){min-height:145px}.step:nth-child(3){min-height:174px}.step:nth-child(4){min-height:203px;background:var(--navy);color:white;border-color:var(--navy)}
+ .step b{display:block;font-size:17px;color:var(--navy);margin-bottom:5px}.step:nth-child(4) b{color:#fff}
+ .step span{font-size:12.5px;color:var(--muted)}.step:nth-child(4) span{color:#b4c3d2}
+ .anatomy{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:8px;align-items:stretch;margin-top:25px}
+ .anatomy .unit{padding:18px 14px;border-radius:10px;background:#fff;border:1px solid var(--line);text-align:center}
+ .anatomy .unit b{display:block;color:var(--navy);font-size:15px;margin-bottom:5px}.anatomy .unit span{font-size:12px;color:var(--muted)}
+ .plus{display:flex;align-items:center;color:var(--coral);font-size:22px;font-weight:900}
+ .compare{display:grid;grid-template-columns:1fr 52px 1fr;gap:12px;align-items:stretch}
+ .versus{display:flex;align-items:center;justify-content:center;font-family:"Noto Serif TC",serif;color:var(--coral);font-weight:900}
+ .prompt-box{border-radius:12px;padding:20px;border:1px solid var(--line);background:#fff}
+ .prompt-box.bad{background:#f2f3f4;color:#596574}.prompt-box.good{background:var(--green-soft);border-color:#bad3c9}
+ .prompt-label{font-size:10px;letter-spacing:.14em;font-weight:900;margin-bottom:9px;color:var(--coral)}
+ .stack{display:grid;gap:8px}
+ .stack-row{display:grid;grid-template-columns:116px 1fr;gap:14px;padding:11px 14px;border-radius:8px;background:#fff;border:1px solid var(--line);font-size:13.5px}
+ .stack-row b{color:var(--navy)}
+.pipeline{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center;margin-top:20px}
+.pipe-card{min-width:0;border:1px solid var(--line);background:#fff;border-radius:10px;padding:16px 13px;text-align:center;min-height:112px}
+ .pipe-card b{display:block;color:var(--navy);margin-bottom:5px}.pipe-card span{font-size:12px;color:var(--muted)}
+ .pipe-arrow{text-align:center;color:var(--coral);font-size:22px;font-weight:900}
+ .scale{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:22px;border-radius:12px;overflow:hidden}
+ .scale div{padding:17px 15px;min-height:125px;background:#e8edf1;border-right:1px solid #fff}
+ .scale div:nth-child(2){background:#dce8ef}.scale div:nth-child(3){background:#d8e9e3}.scale div:nth-child(4){background:#f3ddd7}
+ .scale b{display:block;color:var(--navy);margin-bottom:6px}.scale span{font-size:12px;color:#556474}
+ .recipe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+ .recipe{border:1px solid var(--line);border-radius:10px;background:#fff;padding:17px}
+ .recipe-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:7px}
+ .recipe h3{font-size:16px;margin:0}.badge{font-size:10px;border-radius:999px;padding:4px 8px;white-space:nowrap;background:var(--green-soft);color:var(--green);font-weight:900}
+ .badge.review{background:#fff0d9;color:#90611c}.badge.no{background:var(--coral-soft);color:var(--coral)}
+ .recipe p{font-size:12.5px;color:var(--muted);margin-bottom:0}
+ .decision{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:center;margin-top:20px}
+ .decision div:not(.arrow){border-radius:10px;padding:18px;background:#fff;border:1px solid var(--line);text-align:center}
+ .decision .arrow{color:var(--coral);font-size:22px;font-weight:900}
+ .decision b{display:block;color:var(--navy);margin-bottom:5px}.decision span{font-size:12px;color:var(--muted)}
+ .agenda{display:grid;gap:10px;margin-top:20px}
+ .agenda-row{display:grid;grid-template-columns:90px 1fr 92px;gap:14px;align-items:center;padding:13px 16px;border:1px solid var(--line);border-radius:9px;background:#fff}
+ .agenda-time{font-family:"Noto Serif TC",serif;color:var(--coral);font-weight:900}.agenda-title{color:var(--navy);font-weight:700}.agenda-use{text-align:right;font-size:11px;color:var(--muted)}
+ .topic-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+ .topic{display:grid;grid-template-columns:38px 1fr;gap:12px;padding:15px;border:1px solid var(--line);border-radius:10px;background:#fff}
+ .topic-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--navy);color:#fff;font-family:"Noto Serif TC",serif;font-weight:900;font-size:12px}
+ .topic h3{font-size:15px;margin:0 0 3px}.topic p{font-size:12px;color:var(--muted);margin:0}
+ .format-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:stretch}
+ .format-card{position:relative;border:1px solid var(--line);border-radius:12px;padding:19px;background:#fff;overflow:hidden}
+ .format-card::before{content:attr(data-step);position:absolute;right:14px;top:10px;font-family:"Noto Serif TC",serif;font-size:32px;font-weight:900;color:#e3e8ed}
+ .format-card h3{font-size:18px;margin-top:25px}.format-card p{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+ .format-demo{min-height:112px;border-radius:8px;padding:13px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.65}
+ .format-cli .format-demo{background:#172231;color:#9fd6bc}
+ .format-md .format-demo{background:#edf1f4;color:#35465a}
+ .format-html{border-color:#b9cddd;background:var(--sky)}
+ .format-html .format-demo{background:#fff;color:var(--ink);font-family:inherit;box-shadow:0 6px 18px rgba(19,38,66,.09)}
+ .mini-window{display:flex;gap:4px;margin-bottom:9px}.mini-window i{width:6px;height:6px;border-radius:50%;background:#d4dce4}.mini-window i:first-child{background:var(--coral)}
+ .mini-title{font-weight:900;color:var(--navy);font-size:13px}.mini-stat{display:inline-block;margin-top:7px;padding:3px 7px;border-radius:99px;background:var(--green-soft);color:var(--green);font-size:9px;font-weight:900}
+ .closing{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:26px 0}
+ .closing div{padding:20px 15px;border-top:3px solid var(--coral);background:#fff;border-radius:8px;box-shadow:0 8px 22px rgba(19,38,66,.05)}
+ .closing b{display:block;color:var(--navy);font-size:17px;margin-bottom:6px}.closing span{font-size:12px;color:var(--muted)}
+ .sources{columns:2;column-gap:28px}
+ .source-item{break-inside:avoid;border-top:1px solid var(--line);padding:11px 0;font-size:12.5px;color:var(--muted)}
+ .source-item b{display:block;color:var(--navy);margin-bottom:3px}.source-item a{color:var(--blue);text-underline-offset:3px}
+
+ .mobile-bar{display:none}
+ @media (max-width:900px){
+ html{scroll-snap-type:none}
+ .sidebar{display:none}
+ .mobile-bar{position:sticky;top:0;z-index:30;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--navy);color:#fff;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+ .mobile-bar a{text-decoration:none;font-weight:700;font-size:13px}.mobile-bar span{font-size:11px;color:#9fb2c4}
+ main{margin-left:0}
+ .slide{padding:55px 24px;min-height:auto}
+ .grid4,.grid3,.format-grid{grid-template-columns:repeat(2,1fr)}
+ .anatomy{grid-template-columns:1fr}.plus{justify-content:center;height:12px}
+ .ladder{grid-template-columns:1fr 1fr;align-items:stretch}.step,.step:nth-child(n){min-height:120px}
+ .pipeline{grid-template-columns:1fr}.pipe-card{grid-column:auto}.pipe-arrow{transform:rotate(90deg)}
+ .decision{grid-template-columns:1fr}.decision .arrow{transform:rotate(90deg);text-align:center}
+ .sources{columns:1}
+ }
+ @media (max-width:620px){
+ .grid2,.grid3,.grid4,.topic-list,.closing,.recipe-grid,.format-grid{grid-template-columns:1fr}
+ .compare{grid-template-columns:1fr}.versus{padding:2px}.scale{grid-template-columns:1fr}.scale div{min-height:0}
+ .agenda-row{grid-template-columns:70px 1fr}.agenda-use{display:none}
+ }
+ @media (max-height:760px) and (min-width:901px){
+ .slide{padding-top:36px;padding-bottom:36px}
+ .card{padding:15px 17px}.lead{margin-bottom:18px}
+ .brand{padding-top:18px;padding-bottom:12px}.nav a{min-height:31px;padding-top:4px;padding-bottom:4px}.sidebar-foot{padding-bottom:10px}
+ }
+ @media print{
+ @page{size:A4 landscape;margin:0}
+ .sidebar,.mobile-bar{display:none!important}main{margin:0}.slide{width:100%;min-height:100vh;page-break-after:always;padding:35px 45px}.slide::after{right:18px;bottom:12px}
+ }
+ @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.nav a,.progress span{transition:none}}
+ </style>
+</head>
+<body>
+ <aside class="sidebar" aria-label="章節導覽">
+ <div class="brand">
+ <div class="brand-kicker">Hermes One · Extension</div>
+ <div class="brand-title">從會用，到會設計工作流</div>
+ <div class="brand-sub">下午場延伸內容｜講者版</div>
+ </div>
+ <nav class="nav" id="nav">
+ <a href="#cover" class="active"><span class="nav-num">00</span><span>開場</span></a>
+ <a href="#map"><span class="nav-num">01</span><span>今天延伸什麼</span></a>
+ <a href="#formats"><span class="nav-num">02</span><span>CLI → Markdown → HTML</span></a>
+ <a href="#skill"><span class="nav-num">03</span><span>Skill 是一份 SOP</span></a>
+ <a href="#trigger"><span class="nav-num">04</span><span>Skill 為何沒觸發</span></a>
+ <a href="#prompt"><span class="nav-num">05</span><span>Prompt 三次優化</span></a>
+ <a href="#context"><span class="nav-num">06</span><span>Context Engineering</span></a>
+ <a href="#eval"><span class="nav-num">07</span><span>先寫驗收，再優化</span></a>
+ <a href="#cron"><span class="nav-num">08</span><span>Cron 不是鬧鐘</span></a>
+ <a href="#recipes"><span class="nav-num">09</span><span>排程任務推薦</span></a>
+ <a href="#autonomy"><span class="nav-num">10</span><span>自動化的安全刻度</span></a>
+ <a href="#profiles"><span class="nav-num">11</span><span>Agents 與 Profiles</span></a>
+ <a href="#soul"><span class="nav-num">12</span><span>探索 Agents</span></a>
+ <a href="#kanban"><span class="nav-num">13</span><span>看板指派角色</span></a>
+ <a href="#now"><span class="nav-num">14</span><span>近期業界在談什麼</span></a>
+ <a href="#sources"><span class="nav-num">15</span><span>資料來源</span></a>
+ </nav>
+ <div class="sidebar-foot">
+ <div class="progress"><span id="progress"></span></div>
+ ↑ ↓ / PageUp PageDown 可切頁
+ </div>
+ </aside>
+
+ <div class="mobile-bar"><a href="#cover">Hermes One 延伸</a><span>向下捲動看下一頁</span></div>
+
+ <main>
+ <section class="slide cover" id="cover" data-page="00 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Afternoon Extension · 2026</div>
+ <h1>從「會用 AI」<br>到「會設計<span class="accent">工作流</span>」</h1>
+ <p class="lead">下午已經做過 Skill、Cron 與 Agent。接下來不再多教按鈕，而是回答：怎樣設計得更穩、什麼值得自動化，以及如何建立不同角色並從看板派工。</p>
+ <div class="tag-row">
+ <span class="tag">Skill Design</span><span class="tag">Prompt → Context</span><span class="tag">Cron Jobs</span><span class="tag">Agent Profiles</span><span class="tag hot">Human in the Loop</span>
+ </div>
+ <div class="cover-note">中興大學暑期研習班 · 圖書館／行政／教學人員 · 延伸講授版</div>
+ </div>
+ </section>
+
+ <section class="slide" id="map" data-page="01 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">The next step <span class="tag time">3 分</span></div>
+ <h2>剛才學的是功能；現在學的是<span class="accent">設計判斷</span></h2>
+ <p class="lead">同一套 Hermes One，從一次回答，逐步變成可重複、會定時、能分工的工作系統。</p>
+ <div class="ladder">
+ <div class="step"><b>問一次</b><span>把當下需求說清楚<br>Prompt</span></div>
+ <div class="step"><b>做穩定</b><span>把成功方法存下來<br>Skill</span></div>
+ <div class="step"><b>自己跑</b><span>指定時間、來源與出口<br>Cron + Gateway</span></div>
+ <div class="step"><b>角色化</b><span>Profile、SOUL.md<br>看板指派工作</span></div>
+ </div>
+ <div class="quote" style="margin-top:20px">功能是積木，工作流才是你真正帶回辦公室的東西。最後這段練的不是多按幾個鈕，而是怎麼判斷積木該怎麼組。</div>
+ </div>
+ </section>
+
+ <section class="slide" id="formats" data-page="02 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Output Experience <span class="tag time">5 分</span></div>
+ <h2>AI 產出正在從「看執行結果」<br>走向「直接交付<span class="accent">可閱讀的介面</span>」</h2>
+ <p class="lead">在 Agent 工具的演進裡，輸出不再只停在終端機文字；內容開始被整理成文件，甚至直接成為可以瀏覽、導覽與互動的網頁。</p>
+ <div class="format-grid">
+ <div class="format-card format-cli" data-step="01">
+ <h3>CLI · 給操作者</h3>
+ <p>適合下指令、看日誌、確認工具執行；資訊完整，但一般讀者閱讀門檻高。</p>
+ <div class="format-demo">$ hermes run daily-brief<br><span style="color:#71879c">[tool]</span> search completed<br><span style="color:#71879c">[done]</span> report.md created</div>
+ </div>
+ <div class="format-card format-md" data-step="02">
+ <h3>Markdown · 給內容交換</h3>
+ <p>標題、清單與表格都能保留，容易產生、修改與跨工具攜帶。</p>
+ <div class="format-demo"># 每日情報<br><br>- 重要消息一<br>- 重要消息二<br><br>## 待確認事項</div>
+ </div>
+ <div class="format-card format-html" data-step="03">
+ <h3>HTML · 給人直接閱讀</h3>
+ <p>可加入版面、側欄、圖表、篩選與響應式設計，讀者不必理解原始格式。</p>
+ <div class="format-demo"><div class="mini-window"><i></i><i></i><i></i></div><div class="mini-title">本週館務情報</div><div style="font-size:10px;color:#6b7887;margin-top:4px">重點整理 · 來源連結 · 待辦狀態</div><span class="mini-stat">3 則重要更新</span></div>
+ </div>
+ </div>
+ <div class="quote" style="margin-top:20px">Markdown 適合成為內容底稿；當成果要交給人閱讀、比較或操作時，HTML 可以直接成為交付物。</div>
+ <p class="source">目前 ChatGPT Canvas 已能在沙箱中直接呈現 React／HTML；Claude Artifacts 也將單頁 HTML、互動式元件與可分享 App 列為正式成果類型。<a href="https://help.openai.com/en/articles/9930697-what-is-the-canvas-feature-in-chatgpt-and-how-do-i-use-it" target="_blank" rel="noreferrer">OpenAI Canvas</a> · <a href="https://support.anthropic.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them" target="_blank" rel="noreferrer">Claude Artifacts</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="skill" data-page="03 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Skill Design <span class="tag time">6 分</span></div>
+ <h2>Skill 不是收藏 Prompt，<br>而是把你的<span class="accent">工作方法寫成 SOP</span></h2>
+ <p class="lead">好的 Skill 能讓不同的人、不同時間、不同資料，都走出相近品質的結果。</p>
+ <div class="anatomy">
+ <div class="unit"><b>何時啟動</b><span>使用情境<br>也寫不適用情境</span></div><div class="plus">＋</div>
+ <div class="unit"><b>需要什麼</b><span>檔案、主題<br>日期、對象</span></div><div class="plus">＋</div>
+ <div class="unit"><b>怎麼做</b><span>步驟順序<br>工具與查核</span></div><div class="plus">＋</div>
+ <div class="unit"><b>交付格式</b><span>欄位、篇幅<br>語氣、檔型</span></div><div class="plus">＋</div>
+ <div class="unit"><b>遇錯怎辦</b><span>缺資料先問<br>高風險交給人</span></div>
+ </div>
+ <div class="quote" style="margin-top:22px">判斷標準：新同事只看這份 Skill，能不能照著完成工作？</div>
+ <p class="source">依據：Agent Skills 將 Skill 定義為可攜式的指令、腳本與資源組合，並以漸進揭露方式按需載入。<a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank" rel="noreferrer">Anthropic Engineering</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="trigger" data-page="04 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Trigger Quality <span class="tag time">6 分</span></div>
+ <h2>Skill 做得很好，為什麼 Agent <span class="accent">沒想到要用</span>？</h2>
+ <p class="lead"><code>description</code> 像門口招牌：太模糊，找不到你；寫太廣，什麼事都闖進來。</p>
+ <div class="compare">
+ <div class="prompt-box bad">
+ <div class="prompt-label">太模糊</div>
+ <b>「協助處理館務資料。」</b>
+ <p class="small" style="margin-top:12px">問題：什麼資料？何時該用？輸出什麼？Agent 無法判斷。</p>
+ </div>
+ <div class="versus">→</div>
+ <div class="prompt-box good">
+ <div class="prompt-label">可觸發、可排除</div>
+ <b>「當使用者要把新書清單整理成每週館藏通報時使用；輸出書名、作者、三句摘要與推薦對象。單本書目查詢不要使用。」</b>
+ </div>
+ </div>
+ <div class="grid3" style="margin-top:18px">
+ <div class="card"><div class="card-num">01</div><h3>寫使用者意圖</h3><p class="small">不要只寫內部技術；寫「他想完成什麼」。</p></div>
+ <div class="card"><div class="card-num">02</div><h3>正例與反例</h3><p class="small">準備 5 個該觸發、5 個不該觸發的說法。</p></div>
+ <div class="card"><div class="card-num">03</div><h3>用真實口語測</h3><p class="small">學員不一定會講 Skill 名稱，仍要找得到。</p></div>
+ </div>
+ <div class="quote" style="margin-top:20px">不是把 Skill 名稱背起來才叫會用。真正好用的 Skill，是同事用平常說話的方式交辦，它也知道該拿哪一本 SOP。</div>
+ <p class="source">依據：Agent Skills 官方建議以 should-trigger／should-not-trigger 查詢測試 description。<a href="https://agentskills.io/skill-creation/optimizing-descriptions" target="_blank" rel="noreferrer">Optimizing skill descriptions</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="prompt" data-page="05 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Prompt Iteration <span class="tag time">8 分</span></div>
+ <h2>不要追求神 Prompt；<br>用三次修改把<span class="accent">不可控變可驗收</span></h2>
+ <div class="grid3">
+ <div class="card warn">
+ <div class="card-num">V1 · 只有願望</div>
+ <h3>「幫我整理今天的 AI 新聞。」</h3>
+ <p class="small">不知道來源、讀者、則數、時間範圍，也沒有輸出標準。</p>
+ </div>
+ <div class="card blue">
+ <div class="card-num">V2 · 補齊工作條件</div>
+ <h3>「找過去 24 小時 5 則 AI 新聞，給非技術館員閱讀。」</h3>
+ <p class="small">範圍清楚了，但仍可能選到重複或沒有來源的內容。</p>
+ </div>
+ <div class="card good">
+ <div class="card-num">V3 · 加上驗收規格</div>
+ <h3>「每則含標題、60 字摘要、原始連結、館務影響；去重，無可靠來源則省略。」</h3>
+ <p class="small">完成條件可看、可查、可改，才適合存成 Skill 或交給 Cron。</p>
+ </div>
+ </div>
+ <div class="quote" style="margin-top:20px">優化順序：先看失敗在哪裡 → 只補那一條 → 用同一批案例重跑。</div>
+ </div>
+ </section>
+
+ <section class="slide" id="context" data-page="06 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Context Engineering <span class="tag time">7 分</span></div>
+ <h2>近期的重點已從「怎麼問」<br>移到「<span class="accent">讓它在工作時看見什麼</span>」</h2>
+ <p class="lead">Prompt 只是其中一格。Agent 的結果還受資料、工具、記憶、範例與成功標準共同影響。</p>
+ <div class="stack">
+ <div class="stack-row"><b>任務 Task</b><span>這次到底要完成什麼；不要把所有背景都塞成命令。</span></div>
+ <div class="stack-row"><b>資料 Data</b><span>規章版本、讀者對象、日期範圍、可信來源；只拿此刻需要的。</span></div>
+ <div class="stack-row"><b>工具 Tools</b><span>允許搜尋、讀檔或寄送嗎？工具越多不一定越好。</span></div>
+ <div class="stack-row"><b>記憶 Memory</b><span>長期偏好放 Memory；一次性需求留在這次任務。</span></div>
+ <div class="stack-row"><b>驗收 Check</b><span>要求有來源、固定欄位、不得猜測；說清楚何時要停下來問人。</span></div>
+ </div>
+ <div class="quote" style="margin-top:20px">以前我們像在研究一句咒語；現在更像替新同事準備桌面：正確文件放桌上、只給需要的工具、把交付規格貼在旁邊。</div>
+ <p class="source">依據：Context engineering 是針對 system instructions、tools、外部資料、歷史訊息等整體脈絡的配置；核心是高訊號、少雜訊。<a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noreferrer">Anthropic Engineering</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="eval" data-page="07 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Evaluation <span class="tag time">6 分</span></div>
+ <h2>Prompt 優化最常漏掉的一步：<br><span class="accent">先寫「怎樣算做好」</span></h2>
+ <p class="lead">不要只憑「這次看起來不錯」。準備一小包固定測試題，每次改 Skill 後都重跑。</p>
+ <div class="grid4">
+ <div class="card"><div class="card-num">1</div><h3>正常案例</h3><p class="small">資料完整時，格式、語氣與欄位都正確。</p></div>
+ <div class="card"><div class="card-num">2</div><h3>缺資料案例</h3><p class="small">沒有日期或檔案時，會先詢問而不是猜。</p></div>
+ <div class="card"><div class="card-num">3</div><h3>邊界案例</h3><p class="small">個資、付費、發布或刪除動作會停下來。</p></div>
+ <div class="card"><div class="card-num">4</div><h3>反例</h3><p class="small">不符合任務時，不應亂啟動這個 Skill。</p></div>
+ </div>
+ <div class="decision">
+ <div><b>固定 8–10 題</b><span>用真實工作語句</span></div><div class="arrow">→</div>
+ <div><b>每次改一件事</b><span>描述、範例或規格</span></div><div class="arrow">→</div>
+ <div><b>比較結果</b><span>有進步，也沒有害到舊案例</span></div>
+ </div>
+ <div class="quote" style="margin-top:20px">AI 的回答有變動性，所以不要只問「這一次漂亮嗎」，而要問「換五種真實資料，它還守不守規矩」。</div>
+ <p class="source">依據：Agent eval 應定義 task、trial、grader 與 outcome，並以多次試跑觀察穩定性。<a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" target="_blank" rel="noreferrer">Demystifying evals for AI agents</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="cron" data-page="08 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Scheduled Work <span class="tag time">7 分</span></div>
+ <h2>Cron 不是「幾點叫醒 AI」，<br>而是一份<span class="accent">無人值守的交辦單</span></h2>
+ <div class="anatomy">
+ <div class="unit"><b>何時</b><span>固定時間<br>或一次性提醒</span></div><div class="plus">＋</div>
+ <div class="unit"><b>做什麼</b><span>簡短任務<br>搭配既有 Skill</span></div><div class="plus">＋</div>
+ <div class="unit"><b>看哪裡</b><span>指定來源<br>與工作目錄</span></div><div class="plus">＋</div>
+ <div class="unit"><b>送去哪</b><span>站內、檔案<br>或通訊平台</span></div><div class="plus">＋</div>
+ <div class="unit"><b>失敗怎辦</b><span>留紀錄、通知<br>不自行擴權</span></div>
+ </div>
+ <div class="grid2" style="margin-top:20px">
+ <div class="card good"><h3>適合排程</h3><p class="small">重複頻率高、輸入來源穩定、輸出容易查核、失敗可逆、收件人清楚。</p></div>
+ <div class="card warn"><h3>先不要排程</h3><p class="small">會付款、會公開發布、會刪資料、涉及敏感個資、錯一次就難以回復。</p></div>
+ </div>
+ <div class="quote" style="margin-top:20px">排程前先檢查：如果今晚三點它做錯，而明早才被發現，最壞會怎樣？答案不能接受，就不要全自動。</div>
+ <p class="source">Hermes 官方目前支援一次性／週期任務、Skill-backed jobs、多個 Skills、指定工作目錄與多種傳送出口。<a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/cron.md" target="_blank" rel="noreferrer">Hermes Scheduled Tasks</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="recipes" data-page="09 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Cron Recipes <span class="tag time">8–12 分</span></div>
+ <h2>最值得先做的<span class="accent">六種通用排程</span></h2>
+ <p class="lead">優先選「蒐集、整理、提醒、比對、草擬」；把「核准、發布、刪除」留給人。</p>
+ <div class="recipe-grid">
+ <div class="recipe"><div class="recipe-top"><h3>每日主題情報</h3><span class="badge">可自動</span></div><p>固定來源抓新訊息，去重後產出摘要與連結。</p></div>
+ <div class="recipe"><div class="recipe-top"><h3>截止日雷達</h3><span class="badge">可自動</span></div><p>每天檢查活動、採購或計畫期限，只推送未完成項。</p></div>
+ <div class="recipe"><div class="recipe-top"><h3>每週進度簡報</h3><span class="badge review">送前確認</span></div><p>彙整本週完成、進行中、風險與下週計畫。</p></div>
+ <div class="recipe"><div class="recipe-top"><h3>內容變動巡檢</h3><span class="badge">可自動</span></div><p>比對網頁或文件版本，只列出新增、刪除與異動。</p></div>
+ <div class="recipe"><div class="recipe-top"><h3>待辦事項追蹤</h3><span class="badge review">人工補狀態</span></div><p>定期彙整未完成事項，標示負責人與到期日。</p></div>
+ <div class="recipe"><div class="recipe-top"><h3>對外內容草稿</h3><span class="badge no">不要直發</span></div><p>可以定時產生草稿；正式發布前保留人工核准。</p></div>
+ </div>
+ </div>
+ </section>
+
+ <section class="slide" id="autonomy" data-page="10 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Safe Autonomy <span class="tag time">6 分</span></div>
+ <h2>不要只分「自動／不自動」；<br>替每件任務選一個<span class="accent">安全刻度</span></h2>
+ <div class="scale">
+ <div><b>0 · 建議</b><span>AI 只提供想法<br>人決定也人執行</span></div>
+ <div><b>1 · 草擬</b><span>AI 產出初稿<br>人檢查後採用</span></div>
+ <div><b>2 · 執行後通知</b><span>低風險、可回復<br>留下紀錄供抽查</span></div>
+ <div><b>3 · 需核准才執行</b><span>付費、公開、刪除<br>敏感資料與權限變更</span></div>
+ </div>
+ <div class="grid2" style="margin-top:20px">
+ <div class="card blue"><h3>重點不是一直跳確認框</h3><p class="small">確認太頻繁會形成疲勞；應直接限制它能接觸的資料、工具、收件人與可執行動作。</p></div>
+ <div class="card good"><h3>先限制最壞後果</h3><p class="small">測試資料夾、唯讀權限、固定白名單、草稿匣、可回復紀錄，比一句「請小心」可靠。</p></div>
+ </div>
+ <div class="quote" style="margin-top:20px">我們不是靠 AI 自律，而是像管理新進同仁：先給剛好夠用的鑰匙，重要動作仍要簽核。</div>
+ <p class="source">近期安全討論將重點放在限制 blast radius：透過 sandbox、VM、網路出口與權限邊界，限制 Agent 能造成的最壞影響。<a href="https://www.anthropic.com/engineering/how-we-contain-claude" target="_blank" rel="noreferrer">How we contain Claude across products</a>；<a href="https://github.com/NousResearch/hermes-agent/security" target="_blank" rel="noreferrer">Hermes Security Policy</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="profiles" data-page="11 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Agent Profiles <span class="tag time">7 分</span></div>
+ <h2>Hermes One 的 Agents，<br>實際上是<span class="accent">不同 Hermes Profiles</span></h2>
+ <p class="lead">每個 Profile 都是一個獨立工作角色，不只換名字；它擁有自己的身分、記憶、技能與自動化設定。</p>
+ <div class="grid4">
+ <div class="card blue"><div class="card-num">IDENTITY</div><h3>SOUL.md</h3><p class="small">角色定位、思考原則、語氣與溝通方式。</p></div>
+ <div class="card good"><div class="card-num">KNOWLEDGE</div><h3>Memory＋Skills</h3><p class="small">各自累積的偏好、經驗與專用工作方法。</p></div>
+ <div class="card gold"><div class="card-num">SETUP</div><h3>Model＋Tools</h3><p class="small">每個角色可使用不同模型、工具與設定。</p></div>
+ <div class="card warn"><div class="card-num">WORK</div><h3>Cron＋Sessions</h3><p class="small">各自的排程、對話、日誌與 Gateway 狀態。</p></div>
+ </div>
+ <div class="quote" style="margin-top:20px">教學上可把它理解成「同一套 Hermes 裡的不同專業角色」：研究員、查核員、編輯、專案助理，各自有自己的工作設定。</div>
+ <p class="source">官方定義：Profile 有獨立的 <code>config.yaml</code>、<code>SOUL.md</code>、sessions、memory、skills、cron 與 gateway state；但 Profile 本身不是安全沙箱。<a href="https://hermes-agent.nousresearch.com/docs/user-guide/profiles" target="_blank" rel="noreferrer">Hermes Profiles</a> · <a href="https://github.com/fathah/hermes-desktop" target="_blank" rel="noreferrer">Hermes Desktop</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="soul" data-page="12 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Discover → Agents <span class="tag time">8 分</span></div>
+ <h2>探索 Agents：<br>直接建立別人設計好的<span class="accent">專業角色</span></h2>
+ <p class="lead">Discover 的 Agent 不是換模型，也不是安裝一個 Skill；它會建立新的 Profile，並套用該角色完整的工作人格與原則。</p>
+ <div class="decision">
+ <div><b>1 · 探索</b><span>Discover → Agents<br>瀏覽社群角色</span></div><div class="arrow">→</div>
+ <div><b>2 · 建立</b><span>選擇角色並按 Create<br>例如 API Designer</span></div><div class="arrow">→</div>
+ <div><b>3 · 成為新 Agent</b><span>複製預設 Profile<br>套用新的角色人格</span></div>
+ </div>
+ <div class="grid2" style="margin-top:18px">
+ <div class="card blue">
+ <div class="card-num">REGISTRY EXAMPLE</div>
+ <h3>API Designer</h3>
+ <p class="small">把 API 視為「契約，也是開發者的使用者介面」；先研究現有規則，再設計 REST、RPC 或 GraphQL。</p>
+ <div class="tag-row" style="margin-top:12px"><span class="tag">一致性優先</span><span class="tag">為呼叫者設計</span><span class="tag">避免破壞相容性</span></div>
+ </div>
+ <div class="card good">
+ <div class="card-num">它不只是一段角色名稱</div>
+ <h3>工作原則＋方法＋交付規格</h3>
+ <p class="small">要求具體定義 endpoints、schemas、errors、pagination、auth、idempotency 與 versioning，最後交付 OpenAPI／JSON Schema 式規格與成功／錯誤範例。</p>
+ </div>
+ </div>
+ <div class="quote" style="margin-top:20px"><b>背後機制：</b>Hermes One 會複製預設 Profile，再把 Registry Agent 的 <code>AGENT.md</code> 寫成新 Profile 的 <code>SOUL.md</code>。下載 Agent 的核心，就是引入一套設計好的 Soul。</div>
+ <p class="source">Hermes One 原始碼將 Agents 列為 Discover registry 類型，安裝動作是 Create；專案文件明載「建立由 default clone 的新 Profile，並將 Agent 的 AGENT.md 寫成 SOUL.md」。<a href="https://github.com/fathah/hermes-desktop/blob/main/src/renderer/src/screens/Discover/Discover.tsx" target="_blank" rel="noreferrer">Discover 原始碼</a> · <a href="https://www.hermesdesktop.app/docs" target="_blank" rel="noreferrer">Registry 安裝模型</a> · <a href="https://registry.hermesone.org/" target="_blank" rel="noreferrer">Hermes Registry</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="kanban" data-page="13 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Kanban Assignment <span class="tag time">8 分</span></div>
+ <h2>從看板把工作交給<span class="accent">指定角色 Profile</span></h2>
+ <p class="lead">先建立不同 Profiles 與 SOUL.md，再在看板卡片指定 assignee。角色不是聊天裝飾，而是實際接收任務的工作設定。</p>
+ <div class="pipeline">
+ <div class="pipe-card"><b>研究員 Profile</b><span>廣泛蒐集資料<br>每項主張附來源</span></div>
+ <div class="pipe-arrow">→</div>
+ <div class="pipe-card"><b>查核員 Profile</b><span>檢查來源與矛盾<br>標出缺證據項目</span></div>
+ <div class="pipe-arrow">→</div>
+ <div class="pipe-card"><b>編輯 Profile</b><span>依核准資料改寫<br>不得自行新增事實</span></div>
+ </div>
+ <div class="decision" style="margin-top:20px">
+ <div><b>1 · 建立 Profile</b><span>設定名稱、描述與 SOUL.md</span></div><div class="arrow">→</div>
+ <div><b>2 · 建立卡片</b><span>寫清楚交付物與驗收條件</span></div><div class="arrow">→</div>
+ <div><b>3 · 指派 assignee</b><span>指定 Profile，從看板追蹤狀態</span></div>
+ </div>
+ <div class="quote" style="margin-top:20px">看板真正有價值的地方，是把「誰用什麼角色設定做哪張卡」顯示出來，並留下待辦、執行、阻塞與完成狀態。</div>
+ <p class="source">Hermes 看板官方支援 <code>assign &lt;task&gt; &lt;profile&gt;</code>；卡片會顯示 assigned profile，Profile description 也可供派工判斷。<a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/kanban.md" target="_blank" rel="noreferrer">Hermes Kanban</a> · <a href="https://github.com/nousresearch/hermes-agent/blob/main/website/docs/reference/cli-commands.md" target="_blank" rel="noreferrer">Kanban commands</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="now" data-page="14 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">What people discuss now <span class="tag time">8 分</span></div>
+ <h2>現在業界在談的，已不只是「模型更強」</h2>
+ <div class="topic-list">
+ <div class="topic"><div class="topic-num">1</div><div><h3>Context 是否太肥</h3><p>不是塞越多越聰明；高訊號、按需載入、定期壓縮才穩。</p></div></div>
+ <div class="topic"><div class="topic-num">2</div><div><h3>Skill 能否被正確叫到</h3><p>description、正反例與漸進揭露，成為 Skill 設計核心。</p></div></div>
+ <div class="topic"><div class="topic-num">3</div><div><h3>Skill 生態與信任來源</h3><p>Skill 變得可分享、可安裝，也代表安裝前必須審查來源與腳本。</p></div></div>
+ <div class="topic"><div class="topic-num">4</div><div><h3>Agent 到底有沒有變好</h3><p>從「Demo 看起來很神」走向固定案例、trace 與 outcome 的評估。</p></div></div>
+ <div class="topic"><div class="topic-num">5</div><div><h3>背景任務的可觀測性</h3><p>排程要能暫停、重跑、看歷史、知道失敗，不能設定後就忘記。</p></div></div>
+ <div class="topic"><div class="topic-num">6</div><div><h3>Autonomy 的爆炸半徑</h3><p>與其一直問「你確定嗎」，更重要的是限制資料、工具與可造成的後果。</p></div></div>
+ </div>
+ <div class="quote" style="margin-top:20px">2026 年談 Agent 的成熟度，不只看它能不能跑，而是能否回答：它為什麼啟動、看了什麼、做過什麼、失敗後怎麼停。</div>
+ <p class="source">近期 Hermes 發展也反映相同方向：縮減預設 Skill 以降低雜訊、Skill 使用追蹤、Cron 與 Skill 串接、排程內容安全掃描。<a href="https://github.com/NousResearch/hermes-agent/releases" target="_blank" rel="noreferrer">Hermes Agent Releases</a></p>
+ </div>
+ </section>
+
+ <section class="slide" id="sources" data-page="15 / 15">
+ <div class="slide-inner">
+ <div class="eyebrow">Primary sources</div>
+ <h2>資料來源與講者延伸閱讀</h2>
+ <p class="lead">本教材刻意以官方文件與第一方工程實務為主；功能可能快速變動，授課前建議再看一次 Hermes 最新 release。</p>
+ <div class="sources">
+ <div class="source-item"><b>OpenAI Canvas／Claude Artifacts</b><a href="https://help.openai.com/en/articles/9930697-what-is-the-canvas-feature-in-chatgpt-and-how-do-i-use-it" target="_blank" rel="noreferrer">React／HTML 即時呈現</a> · <a href="https://support.anthropic.com/en/articles/9487310-what-are-artifacts-and-how-do-i-use-them" target="_blank" rel="noreferrer">HTML 網站與互動式成果</a></div>
+ <div class="source-item"><b>Hermes Agent · Scheduled Tasks</b><a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/cron.md" target="_blank" rel="noreferrer">Skill-backed cron、多 Skill、delivery、workdir 與生命週期</a></div>
+ <div class="source-item"><b>Hermes Agent · Releases</b><a href="https://github.com/NousResearch/hermes-agent/releases" target="_blank" rel="noreferrer">近期 Skill、Cron、安全與管理介面更新</a></div>
+ <div class="source-item"><b>Hermes Agent · Security Policy</b><a href="https://github.com/NousResearch/hermes-agent/security" target="_blank" rel="noreferrer">信任邊界、Skills 與 operator review</a></div>
+ <div class="source-item"><b>Agent Skills · Optimizing descriptions</b><a href="https://agentskills.io/skill-creation/optimizing-descriptions" target="_blank" rel="noreferrer">觸發描述、正反例與測試迴圈</a></div>
+ <div class="source-item"><b>Anthropic · Agent Skills</b><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank" rel="noreferrer">Skill 結構、漸進揭露與開發原則</a></div>
+ <div class="source-item"><b>Anthropic · Context engineering</b><a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank" rel="noreferrer">高訊號 context、just-in-time retrieval 與 compaction</a></div>
+ <div class="source-item"><b>Anthropic · Agent evals</b><a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents" target="_blank" rel="noreferrer">task、trial、grader、trace 與 outcome</a></div>
+ <div class="source-item"><b>Hermes · Profiles／Discover Agents／Kanban</b><a href="https://hermes-agent.nousresearch.com/docs/user-guide/profiles" target="_blank" rel="noreferrer">獨立角色 Profiles</a> · <a href="https://www.hermesdesktop.app/docs" target="_blank" rel="noreferrer">Registry Agent → SOUL.md</a> · <a href="https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/kanban.md" target="_blank" rel="noreferrer">看板指派</a></div>
+ <div class="source-item"><b>Anthropic · Agent containment</b><a href="https://www.anthropic.com/engineering/how-we-contain-claude" target="_blank" rel="noreferrer">權限提示疲勞、sandbox 與 blast radius</a></div>
+ </div>
+ <p class="small" style="margin-top:18px">整理日期：2026-07-16。Hermes One 為社群維護的桌面介面；功能說明以 Hermes Agent 官方儲存庫與本機課程版本為準。</p>
+ </div>
+ </section>
+ </main>
+
+ <script>
+ const slides = [...document.querySelectorAll('.slide')];
+ const links = [...document.querySelectorAll('.nav a')];
+ const progress = document.getElementById('progress');
+
+ const setActive = id => {
+ links.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${id}`));
+ const index = slides.findIndex(slide => slide.id === id);
+ if (progress && index >= 0) progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+ const active = links.find(link => link.classList.contains('active'));
+ active?.scrollIntoView({block:'nearest'});
+ };
+
+ const observer = new IntersectionObserver(entries => {
+ const visible = entries.filter(entry => entry.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+ if (visible) setActive(visible.target.id);
+ }, {rootMargin:'-28% 0px -55% 0px', threshold:[0,.15,.4,.7]});
+ slides.forEach(slide => observer.observe(slide));
+ setActive('cover');
+
+ document.addEventListener('keydown', event => {
+ if (!['ArrowDown','ArrowUp','PageDown','PageUp'].includes(event.key)) return;
+ const current = Math.max(0, slides.findIndex(slide => {
+ const rect = slide.getBoundingClientRect();
+ return rect.top <= window.innerHeight * .45 && rect.bottom >= window.innerHeight * .45;
+ }));
+ const forward = event.key === 'ArrowDown' || event.key === 'PageDown';
+ const target = Math.min(slides.length - 1, Math.max(0, current + (forward ? 1 : -1)));
+ if (target !== current) {
+ event.preventDefault();
+ slides[target].scrollIntoView({behavior:'smooth', block:'start'});
+ }
+ });
+ </script>
+</body>
+</html>
