@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中興大學 Hermes Agent 實作課程</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background: #1A1A2E;
+            color: #F5F0EB;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: linear-gradient(145deg, #1A1A2E, #2A2A4E);
+            border-radius: 24px;
+            padding: 48px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(200,107,78,0.3);
+        }
+        .badge {
+            display: inline-block;
+            background: #C86B4E;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            color: #F5F0EB;
+        }
+        .subtitle {
+            color: #E8A87C;
+            font-size: 16px;
+            margin-bottom: 32px;
+        }
+        .link-btn {
+            display: inline-block;
+            background: #C86B4E;
+            color: white;
+            text-decoration: none;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(200,107,78,0.4);
+        }
+        .link-btn:hover {
+            background: #A85A3F;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(200,107,78,0.5);
+        }
+        .link-btn:active {
+            transform: translateY(0);
+        }
+        .arrow { margin-left: 8px; }
+        .footer {
+            margin-top: 32px;
+            font-size: 13px;
+            color: rgba(245,240,235,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="badge">HERMES AGENT</div>
+        <h1>中興大學 Agent 實作課程</h1>
+        <p class="subtitle">2026/07/16（四）13:30 – 16:30</p>
+        <a class="link-btn" href="https://docs.google.com/presentation/d/1ONUleUZYxS0dLfu4EwN4l0guVPUpYMmgfRcRjkIy9vE/edit?usp=sharing" target="_blank">
+            開啟課程簡報 <span class="arrow">&rarr;</span>
+        </a>
+        <p class="footer">點擊上方按鈕即可開啟 Google 簡報</p>
+    </div>
+</body>
+</html>
